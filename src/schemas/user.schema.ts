@@ -9,7 +9,12 @@ export const UserSchema = new Schema({
         type: String,
     },
     bio: {
-        type: String
+        type: String,
+        default: ''
+    },
+    username: {
+        type: String,
+        required: true
     },
     email: {
         type: String,

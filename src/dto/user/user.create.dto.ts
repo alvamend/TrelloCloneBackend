@@ -1,24 +1,27 @@
 import { IsEmail, IsNotEmpty, IsOptional } from "class-validator";
 
 export class UserCreateDto{
-    @IsNotEmpty({message: 'Name cannot be empty'})
+    @IsNotEmpty({message: 'name cannot be empty'})
     name: string;
 
-    @IsNotEmpty({message: 'Surname cannot be empty'})
+    @IsNotEmpty({message: 'surname cannot be empty'})
     surname: string;
 
     @IsOptional()
-    @IsNotEmpty({message: 'Bio cannot be empty'})
+    @IsNotEmpty({message: 'bio cannot be empty'})
     bio: string;
 
+    @IsNotEmpty({message: 'username cannot be empty'})
+    username: string;
+
     @IsEmail()
-    @IsNotEmpty({message: 'Email cannot be empty'})
+    @IsNotEmpty({message: 'email cannot be empty'})
     email: string;
 
-    @IsNotEmpty({message: 'Name cannot be empty'})
+    @IsNotEmpty({message: 'password cannot be empty'})
     password: string;
 
     @IsOptional()
-    @IsNotEmpty({message: 'Name cannot be empty'})
+    @IsNotEmpty({message: 'role cannot be empty'})
     role: string;
 }
