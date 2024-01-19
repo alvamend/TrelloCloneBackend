@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Req, Res, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller, Get, Put, Delete, Param, Body, Req, Res, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { UserUpdateDto } from 'src/dto/user/user.update.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { UserService } from 'src/services/user/user.service';
@@ -8,11 +8,12 @@ import { UserService } from 'src/services/user/user.service';
 @UseGuards(AuthGuard)
 export class UserController {
 
-    constructor(private userService:UserService){}
+    constructor(private userService: UserService) { }
 
     @Put(':id')
-    updateUser(@Body() userUpdateDto:UserUpdateDto, @Res() res:Response){
-        console.log('HOLA')
+    @UsePipes(ValidationPipe)
+    updateUser(@Param() params, @Body() userUpdateDto: UserUpdateDto, @Req() req: Request) {
+        return this.userService.updateInfo(params.id, userUpdateDto, req);
     }
 
 }

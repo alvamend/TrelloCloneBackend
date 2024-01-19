@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { LoginDto } from 'src/dto/auth/login.dto';
-import { TokenPayload } from 'src/interfaces/auth.interface';
+import { TokenPayload, TokenPayloadVerify } from 'src/interfaces/auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
 
     signUp = async (userCreateDto: UserCreateDto, res: Response): Promise<Object> => {
         try {
-            //VERIFY IF USER EXISTS
+            //Verify if user exists
             const userExists: UserInterface = await this.User.findOne({
                 $or: [
                     { email: userCreateDto.email },
@@ -28,7 +28,7 @@ export class AuthService {
                 ]
             });
 
-            //IF THE USER EXISTS, VERIFY WHICH FIELDS ALREADY EXIST
+            //If the user exists, verify which fields already exist
             if (userExists) {
                 if (userExists.email === userCreateDto.email && userExists.username === userCreateDto.username) {
                     return res.status(HttpStatus.BAD_REQUEST).json({ message: 'email and username already exist' })
@@ -39,10 +39,10 @@ export class AuthService {
                 }
             }
 
-            //HASH PASSWORD
+            //Hash password
             const hashedPassword = bcrypt.hashSync(userCreateDto.password, 10);
             const createdUser = await this.User.create({
-                name: userCreateDto.email,
+                name: userCreateDto.name,
                 surname: userCreateDto.surname,
                 bio: userCreateDto?.bio,
                 username: userCreateDto.username,
@@ -51,7 +51,7 @@ export class AuthService {
                 role: userCreateDto?.role
             })
 
-            // IF USER WAS CREATED, RETURN SUCCESSFUL
+            // Return success if user was created
             if (createdUser) return res.status(HttpStatus.CREATED).json({
                 message: 'user created succesfully'
             })
@@ -77,13 +77,14 @@ export class AuthService {
                 sub: findUser._id,
                 name: findUser.name,
                 surname: findUser.surname,
+                username: findUser.username,
                 email: findUser.email,
                 role: findUser.role
             }
 
             // Create refresh and access token
-            const accessToken = this.signJwt(payload, `${process.env.ACCESS_TOKEN}`, '30m');
-            const refreshToken = this.signJwt(payload, `${process.env.REFRESH_TOKEN}`, '1h');
+            const accessToken = this.signJwt(payload, `${process.env.ACCESS_TOKEN}`, `${process.env.ACCESS_TOKEN_DURATION}`);
+            const refreshToken = this.signJwt(payload, `${process.env.REFRESH_TOKEN}`, `${process.env.REFRESH_TOKEN_DURATION}`);
 
             res.cookie('jwt', refreshToken);
 
@@ -100,10 +101,41 @@ export class AuthService {
     }
 
     logout = (req: Request, res: Response) => {
-        if(!req?.cookies?.jwt) return res.sendStatus(204);
+        if (!req?.cookies?.jwt) return res.sendStatus(204);
 
-        res.clearCookie('jwt', {httpOnly: true, sameSite: 'none', secure: true});
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
         res.sendStatus(204);
+    }
+
+    refresh = (req: Request, res: Response) => {
+        const token: string = req?.cookies?.jwt;
+        // If not token is present in the cookie, return unauthorized
+        if (!token) return res.sendStatus(401);
+
+        jwt.verify(
+            token,
+            `${process.env.REFRESH_TOKEN}`,
+            (err, decode:TokenPayloadVerify) => {
+                // If token expired, will return a Forbidden Request
+                if (err) return res.sendStatus(403)
+                const newPayload: TokenPayload = {
+                    sub: decode.sub,
+                    name: decode.name,
+                    surname: decode.surname,
+                    username: decode.surname,
+                    email: decode.email,
+                    role: decode.role
+                }
+
+                const newAccessToken = this.signJwt(newPayload, `${process.env.ACCESS_TOKEN}`, `${process.env.ACCESS_TOKEN_DURATION}`);
+                return res.status(200).json({
+                    username: decode.username,
+                    email: decode.email,
+                    role: decode.role,
+                    accessToken: newAccessToken
+                })
+            }
+        )
     }
 
 }

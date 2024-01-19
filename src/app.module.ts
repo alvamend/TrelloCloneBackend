@@ -10,6 +10,10 @@ import { AuthController } from './controllers/auth/auth.controller';
 import { AuthService } from './services/auth/auth.service';
 import { AdminService } from './services/admin/admin.service';
 import { AdminController } from './controllers/admin/admin.controller';
+import { BoardService } from './services/board/board.service';
+import { BoardController } from './controllers/board/board.controller';
+import { WorkspaceService } from './services/workspace/workspace.service';
+import { WorkspaceController } from './controllers/workspace/workspace.controller';
 
 @Module({
   imports: [
@@ -19,7 +23,7 @@ import { AdminController } from './controllers/admin/admin.controller';
     MongooseModule.forRoot(process.env.DB_QUERY),
     MongooseModule.forFeature(AppSchemas)
   ],
-  controllers: [AppController, UserController, AuthController, AdminController],
-  providers: [AppService, UserService, AuthService, AdminService],
+  controllers: [AppController, UserController, AuthController, AdminController, BoardController, WorkspaceController],
+  providers: [AppService, UserService, AuthService, AdminService, BoardService, WorkspaceService],
 })
 export class AppModule {}

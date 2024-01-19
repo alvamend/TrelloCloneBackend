@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LoginDto } from 'src/dto/auth/login.dto';
 import { UserCreateDto } from 'src/dto/user/user.create.dto';
@@ -24,6 +24,11 @@ export class AuthController {
     @Delete('logout')
     handleLogout(@Req() req: Request, @Res() res: Response) {
         return this.authService.logout(req, res);
+    }
+
+    @Get('refresh')
+    handleRefresh(@Req() req: Request, @Res() res: Response) {
+        return this.authService.refresh(req, res);
     }
 
 }

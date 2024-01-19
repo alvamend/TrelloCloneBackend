@@ -40,13 +40,20 @@ export class AuthGuard implements CanActivate {
         );
 
         if (tokenIsValid !== null) {
-            const userExists: UserInterface = await this.User.findOne({ _id: userDecoded.sub });
+            // Verify if user exists in the DB collection
+            const userExists: UserInterface = await this.User.findOne({ _id: userDecoded.sub }).select({password:0});
             if (!userExists) throw new UnauthorizedException('Cannot access this resource');
 
-            // If user found is an Admin, can access immediately
-            if(userExists.role === 'admin'){
-                return true;
+            // Add user information to request user property
+            req.user = {
+                sub: userExists._id,
+                name: userExists.name,
+                surname: userExists.surname,
+                username: userExists.username,
+                email: userExists.email,
+                role: userExists.role
             }
+            return true;
         }
 
         return true;

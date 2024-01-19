@@ -9,6 +9,6 @@ export class AdminService {
     constructor(@InjectModel('User') private User:Model<UserInterface>){}
 
     getAllUsers = async (): Promise<UserInterface[]> => {
-        return await this.User.find();
+        return await this.User.find().select({password:0});
     }
 }
