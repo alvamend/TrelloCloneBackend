@@ -6,6 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/user/user.controller';
 import { AppSchemas } from './config/schemas';
+import { AuthController } from './controllers/auth/auth.controller';
+import { AuthService } from './services/auth/auth.service';
+import { AdminService } from './services/admin/admin.service';
+import { AdminController } from './controllers/admin/admin.controller';
 
 @Module({
   imports: [
@@ -15,7 +19,7 @@ import { AppSchemas } from './config/schemas';
     MongooseModule.forRoot(process.env.DB_QUERY),
     MongooseModule.forFeature(AppSchemas)
   ],
-  controllers: [AppController, UserController],
-  providers: [AppService, UserService],
+  controllers: [AppController, UserController, AuthController, AdminController],
+  providers: [AppService, UserService, AuthService, AdminService],
 })
 export class AppModule {}
