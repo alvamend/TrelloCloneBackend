@@ -10,3 +10,12 @@ export interface Members{
     user: string;
     workspaceRole?: string;
 }
+
+export interface WorkspaceEdit{
+    privacy?: string;
+    title?: string;
+}
+
+export interface WorkspaceAddMember{
+    email: string;
+}
