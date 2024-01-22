@@ -86,7 +86,7 @@ export class AuthService {
             const accessToken = this.signJwt(payload, `${process.env.ACCESS_TOKEN}`, `${process.env.ACCESS_TOKEN_DURATION}`);
             const refreshToken = this.signJwt(payload, `${process.env.REFRESH_TOKEN}`, `${process.env.REFRESH_TOKEN_DURATION}`);
 
-            res.cookie('jwt', refreshToken);
+            res.cookie('jwt', refreshToken, {httpOnly: true, sameSite: 'none', maxAge: 24*60*60*1000});
 
             return res.status(200).json({
                 username: findUser.username,
