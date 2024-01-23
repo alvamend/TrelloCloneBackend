@@ -8,11 +8,15 @@ import * as jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { LoginDto } from 'src/dto/auth/login.dto';
 import { TokenPayload, TokenPayloadVerify } from 'src/interfaces/auth.interface';
+import { WorkspaceInterface } from 'src/interfaces/workspace.interface';
 
 @Injectable()
 export class AuthService {
 
-    constructor(@InjectModel('User') private User: Model<UserInterface>) { }
+    constructor(
+        @InjectModel('User') private User: Model<UserInterface>,
+        @InjectModel('Workspace') private Workspace: Model<WorkspaceInterface>
+    ) { }
 
     private signJwt = (payload: jwt.JwtPayload, secretKey: string, duration: string) => {
         return jwt.sign(payload, secretKey, { expiresIn: duration });
@@ -51,8 +55,18 @@ export class AuthService {
                 role: userCreateDto?.role
             })
 
+            //Create default workspace when a user registers
+            const defaultWorkspace = await this.Workspace.create({
+                title: createdUser.name + ' ' + createdUser.surname + ' Workspace',
+                members: {
+                    user: createdUser._id,
+                    workspaceRole: 'administrator'
+                },
+                privacy: 'private'
+            })
+
             // Return success if user was created
-            if (createdUser) return res.status(HttpStatus.CREATED).json({
+            if (createdUser && defaultWorkspace) return res.status(HttpStatus.CREATED).json({
                 message: 'user created succesfully'
             })
 
@@ -86,9 +100,10 @@ export class AuthService {
             const accessToken = this.signJwt(payload, `${process.env.ACCESS_TOKEN}`, `${process.env.ACCESS_TOKEN_DURATION}`);
             const refreshToken = this.signJwt(payload, `${process.env.REFRESH_TOKEN}`, `${process.env.REFRESH_TOKEN_DURATION}`);
 
-            res.cookie('jwt', refreshToken, {httpOnly: true, sameSite: 'none', maxAge: 24*60*60*1000});
+            res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
 
             return res.status(200).json({
+                sub: findUser._id,
                 username: findUser.username,
                 email: findUser.email,
                 role: findUser.role,
@@ -115,7 +130,7 @@ export class AuthService {
         jwt.verify(
             token,
             `${process.env.REFRESH_TOKEN}`,
-            (err, decode:TokenPayloadVerify) => {
+            (err, decode: TokenPayloadVerify) => {
                 // If token expired, will return a Forbidden Request
                 if (err) return res.sendStatus(403)
                 const newPayload: TokenPayload = {
@@ -129,6 +144,7 @@ export class AuthService {
 
                 const newAccessToken = this.signJwt(newPayload, `${process.env.ACCESS_TOKEN}`, `${process.env.ACCESS_TOKEN_DURATION}`);
                 return res.status(200).json({
+                    sub: decode.sub,
                     username: decode.username,
                     email: decode.email,
                     role: decode.role,
