@@ -253,4 +253,22 @@ export class WorkspaceService {
             throw error
         }
     }
+
+    delete = async (id: string, req: Request) => {
+        if (id.length !== 24) throw new NotFoundException('invalid id');
+        try {
+            //Check if workspace exists and if it's the default, cannot be deleted
+            const workspace = await this.Workspace.findOne({ _id: id });
+            if (!workspace) throw new NotFoundException('workspace not found');
+            if (workspace.title === `${req.user['name']} ${req.user['surname']} Workspace`) throw new ForbiddenException('default workspace cannot be deleted');
+
+            // We need to make sure that only the creator is able to delete the workspace
+            if (workspace.members[0].user.valueOf() !== req.user['sub'].valueOf()) throw new ForbiddenException('only the creator can delete the workspace');
+
+            await workspace.deleteOne();
+            return { message: 'workspace deleted' }
+        } catch (error) {
+            throw error;
+        }
+    }
 }

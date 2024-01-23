@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request } from 'express';
 import { WorkspaceAddMemberDto } from 'src/dto/workspace/workspace.add.dto';
 import { WorkspaceCreateDto } from 'src/dto/workspace/workspace.create.dto';
@@ -33,6 +33,11 @@ export class WorkspaceController {
     @UsePipes(ValidationPipe)
     editWorkspace(@Param() params, @Req() req: Request, @Body() dto: WorkspaceEditDto) {
         return this.workspaceService.edit(params.id, req, dto);
+    }
+
+    @Delete(':id')
+    deleteWorkspace(@Param() params, @Req() req:Request){
+        return this.workspaceService.delete(params.id, req);
     }
 
     @Put('add-member/:id')
