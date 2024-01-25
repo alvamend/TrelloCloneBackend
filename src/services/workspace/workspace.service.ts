@@ -27,7 +27,7 @@ export class WorkspaceService {
                 }
             });
 
-            if (workspaceCreated) return { message: 'workspace created' }
+            if (workspaceCreated) return { message: 'workspace created', workspace: workspaceCreated }
         } catch (error) {
             throw error
         }
@@ -61,10 +61,13 @@ export class WorkspaceService {
                         as: 'membersInfo'
                     }
                 }, {
+                    $lookup: { from: 'boards', foreignField: 'workspaceRef', localField: '_id', as: 'boards' }
+                }, {
                     $project: {
                         _id: 1,
                         title: 1,
                         privacy: 1,
+                        boards: 1,
                         members: {
                             //Map the array, $members is the variable and each member will have an alias "member"
                             $map: {

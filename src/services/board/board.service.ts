@@ -37,13 +37,14 @@ export class BoardService {
                 title: dto.title,
                 privacy: dto.privacy,
                 workspaceRef: workspace._id,
+                description: dto.description,
                 members: {
                     user: req.user['sub'],
                     boardRole: 'administrator'
                 }
             });
 
-            if (createdBoard) return { message: 'board created successfully' }
+            if (createdBoard) return { message: 'board created successfully', board: createdBoard }
         } catch (error) {
             throw error
         }
