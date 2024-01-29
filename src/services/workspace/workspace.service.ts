@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
 import mongoose, { Model, mongo } from 'mongoose';
@@ -181,7 +181,7 @@ export class WorkspaceService {
             });
 
             //If user cannot edit, forbiddenexception is sent, otherwise, the new user is added
-            if (!userCanEdit) throw new ForbiddenException;
+            if (!userCanEdit) throw new UnauthorizedException;
 
             // Check if the user is already a member
             let userAlreadyMember = false;
@@ -192,7 +192,7 @@ export class WorkspaceService {
             })
 
             if (userAlreadyMember) {
-                throw new ForbiddenException('user is already a member of this workspace')
+                throw new UnauthorizedException('user is already a member of this workspace')
             } else {
                 workspace.members.push({
                     user: userToAddExists._id,
@@ -263,10 +263,10 @@ export class WorkspaceService {
             //Check if workspace exists and if it's the default, cannot be deleted
             const workspace = await this.Workspace.findOne({ _id: id });
             if (!workspace) throw new NotFoundException('workspace not found');
-            if (workspace.title === `${req.user['name']} ${req.user['surname']} Workspace`) throw new ForbiddenException('default workspace cannot be deleted');
+            if (workspace.title === `${req.user['name']} ${req.user['surname']} Workspace`) throw new UnauthorizedException('default workspace cannot be deleted');
 
             // We need to make sure that only the creator is able to delete the workspace
-            if (workspace.members[0].user.valueOf() !== req.user['sub'].valueOf()) throw new ForbiddenException('only the creator can delete the workspace');
+            if (workspace.members[0].user.valueOf() !== req.user['sub'].valueOf()) throw new UnauthorizedException('only the creator can delete the workspace');
 
             await workspace.deleteOne();
             return { message: 'workspace deleted' }
