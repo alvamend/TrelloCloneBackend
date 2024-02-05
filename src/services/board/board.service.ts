@@ -114,7 +114,7 @@ export class BoardService {
                                                 $filter: {
                                                     input: '$membersInfo',
                                                     as: 'info',
-                                                    cond: ['$$info._id', '$$member.user']
+                                                    cond: { $eq: ['$$info._id', '$$member.user'] }
                                                 }
                                             },
                                             0
@@ -204,7 +204,7 @@ export class BoardService {
             // Add the new user into the members array
             board.members.push({
                 user: userExists._id,
-                boardRole: 'collaborator'
+                boardRole: body?.boardRole
             });
 
             await board.save();
