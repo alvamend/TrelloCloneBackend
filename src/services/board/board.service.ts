@@ -51,7 +51,6 @@ export class BoardService {
     }
 
     update = async (req: Request, body: BoardUpdateDto, id: string): Promise<Object> => {
-        if (id.length !== 24) throw new NotFoundException('invalid id');
         try {
             //Validate if board exists
             const board: BoardInterface = await this.Board.findOne({ _id: id });
@@ -81,7 +80,6 @@ export class BoardService {
     }
 
     retrieveBoard = async (id: string, req: Request): Promise<BoardInterface> => {
-        if (id.length !== 24) throw new NotFoundException('invalid id');
         try {
             //Verify if board exists
             const boardId = new mongoose.Types.ObjectId(id);
@@ -173,7 +171,6 @@ export class BoardService {
     }
 
     addMember = async (id: string, body: BoardAddDto, req: Request): Promise<Object> => {
-        if (id.length !== 24) throw new NotFoundException('invalid id');
         try {
             // Verify if the user that will be added exists
             const userExists = await this.User.findOne({ email: body.email });
@@ -215,7 +212,6 @@ export class BoardService {
     }
 
     removeMember = async (id: string, body: BoardDeleteDto, req: Request): Promise<Object> => {
-        if (id.length !== 24) throw new NotFoundException('invalid id');
         try {
             // Verify if the user that will be added exists
             const userExists = await this.User.findOne({ email: body.email });
@@ -259,7 +255,6 @@ export class BoardService {
     }
 
     delete = async (id: string, req: Request) => {
-        if (id.length !== 24) throw new NotFoundException('invalid id');
         try {
             const board = await this.Board.findOne({ _id: id });
             if (!board) throw new NotFoundException('board not found');

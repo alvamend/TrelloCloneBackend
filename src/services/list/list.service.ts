@@ -65,7 +65,6 @@ export class ListService {
     }
 
     edit = async (id: string, body: ListUpdateDto, req: Request): Promise<Object> => {
-        if (id.length !== 24) throw new NotFoundException('invalid id')
         try {
             // Check if the list exists, if not, return a not found exception
             const listExists: ListInterface = await this.List.findOne({ _id: id });
@@ -101,7 +100,6 @@ export class ListService {
     }
 
     delete = async (id: string, req: Request) => {
-        if (id.length !== 24) throw new NotFoundException('invalid id');
         try {
             // Check if the list exists, if not, return a not found exception
             const listExists: ListInterface = await this.List.findOne({ _id: id });

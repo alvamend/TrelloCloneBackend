@@ -47,7 +47,6 @@ export class WorkspaceService {
     }
 
     getWorkspaceById = async (id: string, req: Request): Promise<WorkspaceInterface> => {
-        if (id.length !== 24) throw new HttpException('invalid id', HttpStatus.NOT_FOUND);
         try {
             const workspace: any = await this.retrieveWorkspaceInfo(id);
 
@@ -83,7 +82,6 @@ export class WorkspaceService {
     }
 
     edit = async (id: string, req: Request, body: WorkspaceEditDto) => {
-        if (id.length !== 24) throw new HttpException('invalid id', HttpStatus.NOT_FOUND);
         try {
             const workspace: WorkspaceInterface = await this.Workspace.findOne({ _id: id });
             if (!workspace) throw new NotFoundException;
@@ -109,7 +107,6 @@ export class WorkspaceService {
     }
 
     addmember = async (id: string, req: Request, body: WorkspaceAddMemberDto) => {
-        if (id.length !== 24) throw new HttpException('invalid id', HttpStatus.NOT_FOUND);
         try {
             // Verify if workspace exists and if the user that we want to add exists as well
             const workspace = await this.Workspace.findOne({ _id: id });
@@ -158,7 +155,6 @@ export class WorkspaceService {
     }
 
     removeMember = async (id: string, req: Request, body: WorkspaceRemoveMemberDto) => {
-        if (id.length !== 24) throw new HttpException('invalid id', HttpStatus.NOT_FOUND);
         try {
             // Verify if workspace exists and if the user that we want to remove exists as well
             const workspace = await this.Workspace.findOne({ _id: id });
@@ -206,7 +202,6 @@ export class WorkspaceService {
     }
 
     delete = async (id: string, req: Request) => {
-        if (id.length !== 24) throw new NotFoundException('invalid id');
         try {
             //Check if workspace exists and if it's the default, cannot be deleted
             const workspace = await this.Workspace.findOne({ _id: id });

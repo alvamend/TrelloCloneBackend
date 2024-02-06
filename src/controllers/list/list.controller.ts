@@ -4,6 +4,7 @@ import { ListCreateDto } from 'src/dto/list/list.create.dto';
 import { ListUpdateDto } from 'src/dto/list/list.update.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { QueryInterface } from 'src/interfaces/query.interface';
+import { IdElementLength } from 'src/middlewares/IdElementLength.middleware';
 import { ListService } from 'src/services/list/list.service';
 
 @Controller('list')
@@ -23,12 +24,14 @@ export class ListController {
     }
 
     @Put(':id')
+    @UseGuards(IdElementLength)
     @UsePipes(ValidationPipe)
     updateList(@Param() params, @Body() dto: ListUpdateDto, @Req() req: Request) {
         return this.listService.edit(params.id, dto, req);
     }
 
     @Delete(':id')
+    @UseGuards(IdElementLength)
     deleteList(@Param() params, @Req() req: Request){
         return this.listService.delete(params.id, req);
     }
