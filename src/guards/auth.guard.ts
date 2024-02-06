@@ -28,18 +28,19 @@ export class AuthGuard implements CanActivate {
         const req = context.switchToHttp().getRequest<Request>();
         const token: string = req.headers['authorization'];
         if (!token) throw new UnauthorizedException(`Token not present`);
-        let userDecoded: string | jwt.JwtPayload;
+        let userDecoded: any;
 
-        const tokenIsValid: void = jwt.verify(
+        jwt.verify(
             token,
             `${process.env.ACCESS_TOKEN}`,
-            (err, decode) => {
-                if (err) throw new UnauthorizedException('Token expired');
-                userDecoded = decode
+            async (err, decode) => {
+                if(!err){
+                    userDecoded = decode
+                }
             }
         );
 
-        if (tokenIsValid !== null) {
+        if (userDecoded) {
             // Verify if user exists in the DB collection
             const userExists: UserInterface = await this.User.findOne({ _id: userDecoded.sub }).select({password:0});
             if (!userExists) throw new UnauthorizedException('Cannot access this resource');
@@ -54,8 +55,8 @@ export class AuthGuard implements CanActivate {
                 role: userExists.role
             }
             return true;
+        }else{
+            throw new UnauthorizedException('Unable to verify token')
         }
-
-        return true;
     }
 }
