@@ -14,6 +14,8 @@ import { BoardService } from './services/board/board.service';
 import { BoardController } from './controllers/board/board.controller';
 import { WorkspaceService } from './services/workspace/workspace.service';
 import { WorkspaceController } from './controllers/workspace/workspace.controller';
+import { ListService } from './services/list/list.service';
+import { ListController } from './controllers/list/list.controller';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { WorkspaceController } from './controllers/workspace/workspace.controlle
     MongooseModule.forRoot(process.env.DB_QUERY),
     MongooseModule.forFeature(AppSchemas)
   ],
-  controllers: [AppController, UserController, AuthController, AdminController, BoardController, WorkspaceController],
-  providers: [AppService, UserService, AuthService, AdminService, BoardService, WorkspaceService],
+  controllers: [AppController, UserController, AuthController, AdminController, BoardController, WorkspaceController, ListController],
+  providers: [AppService, UserService, AuthService, AdminService, BoardService, WorkspaceService, ListService],
 })
 export class AppModule {}
