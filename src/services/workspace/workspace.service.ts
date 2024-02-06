@@ -49,61 +49,7 @@ export class WorkspaceService {
     getWorkspaceById = async (id: string, req: Request): Promise<WorkspaceInterface> => {
         if (id.length !== 24) throw new HttpException('invalid id', HttpStatus.NOT_FOUND);
         try {
-            const workspaceId = new mongoose.Types.ObjectId(id);
-            const workspace = await this.Workspace.aggregate([
-                {
-                    $match: { '_id': workspaceId }
-                }, {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'members.user',
-                        foreignField: '_id',
-                        as: 'membersInfo'
-                    }
-                }, {
-                    $lookup: { from: 'boards', foreignField: 'workspaceRef', localField: '_id', as: 'boards' }
-                }, {
-                    $project: {
-                        _id: 1,
-                        title: 1,
-                        privacy: 1,
-                        boards: 1,
-                        members: {
-                            //Map the array, $members is the variable and each member will have an alias "member"
-                            $map: {
-                                input: '$members',
-                                as: 'member',
-                                in: {
-                                    // We iterate on each field, in this case, under user which needs to be mapped agains Users collection
-                                    // we filter using $membersInfo obtained in the previous $lookup and its new alias is info, then
-                                    // it will match $$info_id and member.user
-                                    user: {
-                                        $arrayElemAt: [
-                                            {
-                                                $filter: {
-                                                    input: '$membersInfo',
-                                                    as: 'info',
-                                                    cond: { $eq: ['$$info._id', '$$member.user'] }
-                                                }
-                                            },
-                                            0
-                                        ]
-                                    },
-                                    workspaceRole: '$$member.workspaceRole',
-                                    _id: '$$member._id'
-                                }
-                            }
-                        },
-
-                    }
-                }, {
-                    $project: {
-                        'members.user.password': 0,
-                        'members.user.role': 0,
-                        'members.user.bio': 0
-                    }
-                }
-            ]);
+            const workspace: any = await this.retrieveWorkspaceInfo(id);
 
             // If workspace length is greater than zero it means there were results
             if (workspace.length > 0) {
@@ -200,8 +146,10 @@ export class WorkspaceService {
                 });
 
                 await workspace.save();
+                console.log(workspace);
                 return {
-                    message: 'user added to the workspace'
+                    message: 'user added to the workspace',
+                    members: workspace.members
                 }
             }
         } catch (error) {
@@ -272,6 +220,71 @@ export class WorkspaceService {
             return { message: 'workspace deleted' }
         } catch (error) {
             throw error;
+        }
+    }
+
+    // util function
+    retrieveWorkspaceInfo = async (id: string): Promise<WorkspaceInterface[]> => {
+        try {
+            const workspaceId = new mongoose.Types.ObjectId(id);
+            const workspace = await this.Workspace.aggregate([
+                {
+                    $match: { '_id': workspaceId }
+                }, {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'members.user',
+                        foreignField: '_id',
+                        as: 'membersInfo'
+                    }
+                }, {
+                    $lookup: { from: 'boards', foreignField: 'workspaceRef', localField: '_id', as: 'boards' }
+                }, {
+                    $project: {
+                        _id: 1,
+                        title: 1,
+                        privacy: 1,
+                        boards: 1,
+                        members: {
+                            //Map the array, $members is the variable and each member will have an alias "member"
+                            $map: {
+                                input: '$members',
+                                as: 'member',
+                                in: {
+                                    // We iterate on each field, in this case, under user which needs to be mapped agains Users collection
+                                    // we filter using $membersInfo obtained in the previous $lookup and its new alias is info, then
+                                    // it will match $$info_id and member.user
+                                    user: {
+                                        $arrayElemAt: [
+                                            {
+                                                $filter: {
+                                                    input: '$membersInfo',
+                                                    as: 'info',
+                                                    cond: { $eq: ['$$info._id', '$$member.user'] }
+                                                }
+                                            },
+                                            0
+                                        ]
+                                    },
+                                    workspaceRole: '$$member.workspaceRole',
+                                    _id: '$$member._id'
+                                }
+                            }
+                        },
+
+                    }
+                }, {
+                    $project: {
+                        'members.user.password': 0,
+                        'members.user.role': 0,
+                        'members.user.bio': 0
+                    }
+                }
+            ]);
+
+            return workspace;
+        } catch (error) {
+            throw error
         }
     }
 }
