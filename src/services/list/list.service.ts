@@ -28,23 +28,9 @@ export class ListService {
         }
     }
 
-    create = async (body: ListCreateDto, req: Request): Promise<Object> => {
+    create = async (body: ListCreateDto): Promise<Object> => {
         try {
             const { title, boardRef } = body;
-
-            // Check if the board exists, if not, retrieve not found exception
-            const boardExists = await this.Board.findOne({ _id: boardRef });
-            if (!boardExists) throw new NotFoundException('board does not exist');
-
-            // If the board exists, we need to verify if the current user is a member of the board, otherwise, should not be able to create one
-            let userBelongsToBoard: boolean = false;
-            boardExists.members.forEach(member => {
-                if (member.user.valueOf() === req.user['sub'].valueOf()) {
-                    userBelongsToBoard = true;
-                }
-            })
-
-            if (!userBelongsToBoard) throw new UnauthorizedException('only members of the board can add lists')
 
             // Create the list
             const createdList = await this.List.create({
@@ -64,64 +50,25 @@ export class ListService {
         }
     }
 
-    edit = async (id: string, body: ListUpdateDto, req: Request): Promise<Object> => {
+    edit = async (id: string, body: ListUpdateDto): Promise<Object> => {
         try {
-            // Check if the list exists, if not, return a not found exception
-            const listExists: ListInterface = await this.List.findOne({ _id: id });
-            if (!listExists) throw new NotFoundException('list does not exist');
-
-            // Verify if the user belongs to the board of the list boardReference field, only members of the board can modify the lists
-            let userBelongsToBoard: boolean = false;
-            // Get the board
-            const boardRef: BoardInterface = await this.Board.findOne({ _id: listExists.boardRef });
-
-            boardRef.members.forEach(member => {
-                if (member.user.valueOf() === req.user['sub'].valueOf()) {
-                    userBelongsToBoard = true;
-                }
-            });
-
-            if (!userBelongsToBoard) throw new UnauthorizedException('only members of the board can make changes to the lists');
-
-            //If user does belong to the board, then, changes can be applied
-            await listExists.updateOne({
+            const editedList = await this.List.findOneAndUpdate({ _id: id }, {
                 title: body?.title,
                 boardRef: body?.boardRef,
                 status: body?.status
             })
 
-            return {
-                message: 'list was updated',
-            }
-
+            if (editedList) return { message: 'list was updated' }
         } catch (error) {
             throw error
         }
     }
 
-    delete = async (id: string, req: Request) => {
+    delete = async (id: string) => {
         try {
-            // Check if the list exists, if not, return a not found exception
-            const listExists: ListInterface = await this.List.findOne({ _id: id });
-            if (!listExists) throw new NotFoundException('list does not exist');
+            const deletedList = await this.List.findOneAndDelete({ _id: id });
+            if (deletedList) return { message: 'list deleted' }
 
-            // Verify if the user belongs to the board of the list boardReference field, only members of the board can modify the lists
-            let userBelongsToBoard: boolean = false;
-            // Get the board
-            const boardRef: BoardInterface = await this.Board.findOne({ _id: listExists.boardRef });
-
-            boardRef.members.forEach(member => {
-                if (member.user.valueOf() === req.user['sub'].valueOf()) {
-                    userBelongsToBoard = true;
-                }
-            });
-
-            if (!userBelongsToBoard) throw new UnauthorizedException('only members of the board can make changes to the lists');
-
-            await listExists.deleteOne();
-            return{
-                message: 'list deleted'
-            }
         } catch (error) {
             throw error
         }

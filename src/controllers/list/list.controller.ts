@@ -2,9 +2,11 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards,
 import { Request } from 'express';
 import { ListCreateDto } from 'src/dto/list/list.create.dto';
 import { ListUpdateDto } from 'src/dto/list/list.update.dto';
+import { IdElementLength } from 'src/guards/IdElementLength.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { CanCreateListOrCard } from 'src/guards/canCreateListOrCard.guard';
+import { CanEditList } from 'src/guards/canEditList.guard';
 import { QueryInterface } from 'src/interfaces/query.interface';
-import { IdElementLength } from 'src/middlewares/IdElementLength.middleware';
 import { ListService } from 'src/services/list/list.service';
 
 @Controller('list')
@@ -18,21 +20,22 @@ export class ListController {
     }
 
     @Post()
+    @UseGuards(CanCreateListOrCard)
     @UsePipes(ValidationPipe)
-    createList(@Body() dto: ListCreateDto, @Req() req: Request) {
-        return this.listService.create(dto, req);
+    createList(@Body() dto: ListCreateDto) {
+        return this.listService.create(dto);
     }
 
     @Put(':id')
-    @UseGuards(IdElementLength)
+    @UseGuards(IdElementLength, CanEditList)
     @UsePipes(ValidationPipe)
-    updateList(@Param() params, @Body() dto: ListUpdateDto, @Req() req: Request) {
-        return this.listService.edit(params.id, dto, req);
+    updateList(@Param() params, @Body() dto: ListUpdateDto) {
+        return this.listService.edit(params.id, dto);
     }
 
     @Delete(':id')
-    @UseGuards(IdElementLength)
-    deleteList(@Param() params, @Req() req: Request){
-        return this.listService.delete(params.id, req);
+    @UseGuards(IdElementLength, CanEditList)
+    deleteList(@Param() params){
+        return this.listService.delete(params.id);
     }
 }

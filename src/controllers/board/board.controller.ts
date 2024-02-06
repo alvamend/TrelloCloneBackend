@@ -3,8 +3,8 @@ import { Request } from 'express';
 import { BoardAddDto } from 'src/dto/board/board.add.dto';
 import { BoardCreateDto } from 'src/dto/board/board.create.dto';
 import { BoardUpdateDto } from 'src/dto/board/board.update.dto';
+import { IdElementLength } from 'src/guards/IdElementLength.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { IdElementLength } from 'src/middlewares/IdElementLength.middleware';
 import { BoardService } from 'src/services/board/board.service';
 
 @Controller('board')

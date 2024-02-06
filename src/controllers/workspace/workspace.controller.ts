@@ -4,8 +4,8 @@ import { WorkspaceAddMemberDto } from 'src/dto/workspace/workspace.add.dto';
 import { WorkspaceCreateDto } from 'src/dto/workspace/workspace.create.dto';
 import { WorkspaceEditDto } from 'src/dto/workspace/workspace.edit.dto';
 import { WorkspaceRemoveMemberDto } from 'src/dto/workspace/workspace.remove.dto';
+import { IdElementLength } from 'src/guards/IdElementLength.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
-import { IdElementLength } from 'src/middlewares/IdElementLength.middleware';
 import { WorkspaceService } from 'src/services/workspace/workspace.service';
 
 @Controller('workspace')
