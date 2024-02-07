@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export interface CardInterface extends Document{
+export interface CardInterface extends Document {
     title: string;
     description?: string;
     listRef: string;
@@ -8,8 +8,9 @@ export interface CardInterface extends Document{
     dueDate?: Date;
     attachments?: Array<string>;
     cover?: string;
+    status?: string;
 }
 
-interface Members{
+interface Members {
     user: string;
 }

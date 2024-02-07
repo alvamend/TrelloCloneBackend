@@ -30,6 +30,10 @@ export const CardSchema = new Schema({
     cover: {
         type: String,
         default: '#fff'
+    },
+    status: {
+        type: String,
+        default: 'active'
     }
 }, {
     versionKey: false,
