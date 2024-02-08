@@ -19,6 +19,8 @@ import { ListController } from './controllers/list/list.controller';
 import { CardService } from './services/card/card.service';
 import { CardController } from './controllers/card/card.controller';
 import { StorageService } from './services/storage/storage.service';
+import { AttachmentService } from './services/attachment/attachment.service';
+import { AttachmentController } from './controllers/attachment/attachment.controller';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { StorageService } from './services/storage/storage.service';
     MongooseModule.forRoot(process.env.DB_QUERY),
     MongooseModule.forFeature(AppSchemas),
   ],
-  controllers: [AppController, UserController, AuthController, AdminController, BoardController, WorkspaceController, ListController, CardController],
-  providers: [AppService, UserService, AuthService, AdminService, BoardService, WorkspaceService, ListService, CardService, StorageService],
+  controllers: [AppController, UserController, AuthController, AdminController, BoardController, WorkspaceController, ListController, CardController, AttachmentController],
+  providers: [AppService, UserService, AuthService, AdminService, BoardService, WorkspaceService, ListService, CardService, StorageService, AttachmentService],
 })
 export class AppModule {}

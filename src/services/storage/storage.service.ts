@@ -36,4 +36,13 @@ export class StorageService {
 
     return signedUrl;
   };
+
+  deleteFile = async(fileName:string):Promise<boolean> => {
+    try {
+      await this.bucket.file(fileName).delete();
+      return true;
+    } catch (error) {
+      throw error
+    }
+  }
 }

@@ -1,6 +1,8 @@
 import { Document } from 'mongoose';
 
 export interface AttachmentInterface extends Document {
-  listId: string;
+  cardId: string;
   filename: string;
+  user: string;
+  description?: string
 }

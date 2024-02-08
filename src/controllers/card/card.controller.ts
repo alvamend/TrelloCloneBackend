@@ -11,14 +11,8 @@ import {
   UsePipes,
   ValidationPipe,
   UseGuards,
-  UseInterceptors,
-  UploadedFile,
-  ParseFilePipeBuilder,
-  HttpStatus,
-  Res,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { CardCreateDto } from 'src/dto/card/card.create.dto';
 import { CardEditDto } from 'src/dto/card/card.edit.dto';
 import { CardMemberManagement } from 'src/dto/card/card.member.dto';
@@ -26,9 +20,7 @@ import { IdElementLength } from 'src/guards/IdElementLength.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { CanCreateListOrCard } from 'src/guards/canCreateListOrCard.guard';
 import { CanEditCard } from 'src/guards/canEditCard.guard';
-import {
-  CardQueryInterface,
-} from 'src/interfaces/query.interface';
+import { CardQueryInterface } from 'src/interfaces/query.interface';
 import { CardService } from 'src/services/card/card.service';
 
 @Controller('card')
@@ -41,12 +33,6 @@ export class CardController {
   @UseGuards(CanCreateListOrCard)
   createCard(@Body() body: CardCreateDto, @Req() req: Request) {
     return this.cardService.create(body, req);
-  }
-
-  @Get('file/:filename')
-  async getFile(@Param() param, @Res() response: Response) {
-    const signedUrl = await this.cardService.getFile(param.filename);
-    response.redirect(signedUrl);
   }
 
   @Get('query')
@@ -85,27 +71,5 @@ export class CardController {
   @UsePipes(ValidationPipe)
   removeMember(@Param() params, @Body() body: CardMemberManagement) {
     return this.cardService.removeMember(params.id, body);
-  }
-
-  @Post('upload/:id')
-  @UseGuards(IdElementLength, CanEditCard)
-  @UseInterceptors(FileInterceptor('file'))
-  uploadFile(
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({
-          fileType: 'pdf|png|jpeg|jpg|JPG|JPEG',
-        })
-        .addMaxSizeValidator({
-          maxSize: 1000000,
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    file: Express.Multer.File,
-    @Param() params,
-  ) {
-    return this.cardService.addAttachment(params.id, file);
   }
 }

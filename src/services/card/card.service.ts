@@ -10,19 +10,15 @@ import mongoose, { Model } from 'mongoose';
 import { CardCreateDto } from 'src/dto/card/card.create.dto';
 import { CardEditDto } from 'src/dto/card/card.edit.dto';
 import { CardMemberManagement } from 'src/dto/card/card.member.dto';
-import { AttachmentInterface } from 'src/interfaces/attachment.interface';
 import { CardInterface } from 'src/interfaces/card.interface';
 import { UserInterface } from 'src/interfaces/user.interface';
 import { StorageService } from '../storage/storage.service';
-import * as moment from 'moment';
 
 @Injectable()
 export class CardService {
   constructor(
     @InjectModel('Card') private Card: Model<CardInterface>,
     @InjectModel('User') private User: Model<UserInterface>,
-    @InjectModel('Attachment') private Attachment: Model<AttachmentInterface>,
-    private storageService: StorageService,
   ) {}
 
   create = async (body: CardCreateDto, req: Request): Promise<Object> => {
@@ -253,40 +249,6 @@ export class CardService {
       if (deletedCard) return { message: 'card deleted' };
     } catch (error) {
       throw error;
-    }
-  };
-
-  addAttachment = async (id: string, file: Express.Multer.File) => {
-    try {
-      // Generate another name to the file, if not, then the file will be overwritten
-      const newFileName = `${moment().unix()}-${file.originalname}`;
-      file.filename = newFileName;
-
-      // Call uploadfile method, if it worked, then we proceed to create an attachment record
-      const fileSaved = await this.storageService.uploadFile(file);
-      if (!fileSaved)
-        throw new InternalServerErrorException('could not upload the file');
-
-      const createAttachment = await this.Attachment.create({
-        listId: id,
-        filename: file.filename,
-      });
-
-      if (!createAttachment)
-        throw new InternalServerErrorException('could not upload the file');
-      return { message: 'attachment added' };
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  getFile = async (filename: string) => {
-    try {
-      const signedUrl = await this.storageService.getSignedUrl(filename);
-
-      return signedUrl;
-    } catch (error) {
-      console.error(error);
     }
   };
 
