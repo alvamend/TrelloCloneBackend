@@ -1,3 +1,4 @@
+import { AttachmentSchema } from "src/schemas/attachments.schema";
 import { BoardSchema } from "src/schemas/board.schema";
 import { CardSchema } from "src/schemas/card.schema";
 import { ListSchema } from "src/schemas/list.schema";
@@ -20,5 +21,8 @@ export const AppSchemas = [
     },{
         name: 'Card',
         schema: CardSchema
+    },{
+        name: 'Attachment',
+        schema: AttachmentSchema
     }
 ]

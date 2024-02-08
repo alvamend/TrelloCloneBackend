@@ -6,7 +6,6 @@ export interface CardInterface extends Document {
     listRef: string;
     members: Array<Members>;
     dueDate?: Date;
-    attachments?: Array<string>;
     cover?: string;
     status?: string;
 }

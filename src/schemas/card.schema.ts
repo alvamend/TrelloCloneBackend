@@ -22,11 +22,6 @@ export const CardSchema = new Schema({
     dueDate: {
         type: Date
     },
-    attachments: [{
-        filename: {
-            type: String
-        }
-    }],
     cover: {
         type: String,
         default: '#fff'
