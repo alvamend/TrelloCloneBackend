@@ -13,6 +13,7 @@ import { CardMemberManagement } from 'src/dto/card/card.member.dto';
 import { CardInterface } from 'src/interfaces/card.interface';
 import { UserInterface } from 'src/interfaces/user.interface';
 import { StorageService } from '../storage/storage.service';
+import { CardAddTaskDto } from 'src/dto/card/card.add.task.dto';
 
 @Injectable()
 export class CardService {
@@ -50,9 +51,12 @@ export class CardService {
           status: body?.status,
           listRef: body?.listRef,
           cover: body?.cover,
+          dueDate: new Date(body?.dueDate),
         },
       );
 
+      if (!editedCard)
+        throw new InternalServerErrorException('card could not be updated');
       return { message: 'card updated' };
     } catch (error) {
       throw error;
@@ -247,6 +251,41 @@ export class CardService {
     try {
       const deletedCard = await this.Card.findOneAndDelete({ _id: id });
       if (deletedCard) return { message: 'card deleted' };
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  addTask = async (id: string, body: CardAddTaskDto): Promise<Object> => {
+    try {
+      // Get the card from the DB
+      const card = await this.Card.findOne({ _id: id });
+      if (!card) throw new NotFoundException('card does not exist');
+
+      // Push the task array to add the new one
+      card.taskList.push({
+        task: body.task,
+      });
+
+      await card.save();
+      return { message: 'task added to the card' };
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  deleteTask = async (cardId: string, taskId: string) => {
+    try {
+      const card = await this.Card.findOne({ _id: cardId });
+      const newTaskArray = card.taskList.filter(
+        (task) => task['_id'].valueOf() !== taskId,
+      );
+
+      await card.updateOne({
+        taskList: newTaskArray,
+      });
+
+      return { message: 'task deleted' };
     } catch (error) {
       throw error;
     }

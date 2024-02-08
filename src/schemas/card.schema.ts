@@ -1,36 +1,48 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
-export const CardSchema = new Schema({
+export const CardSchema = new Schema(
+  {
     title: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        default: ''
+      type: String,
+      default: '',
     },
     listRef: {
-        type: Schema.Types.ObjectId,
-        ref: 'List'
+      type: Schema.Types.ObjectId,
+      ref: 'List',
     },
-    members: [{
+    members: [
+      {
         user: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        }
-    }],
+          type: Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      },
+    ],
     dueDate: {
-        type: Date
+      type: Date,
     },
     cover: {
-        type: String,
-        default: '#fff'
+      type: String,
+      default: '#fff',
     },
     status: {
-        type: String,
-        default: 'active'
-    }
-}, {
+      type: String,
+      default: 'active',
+    },
+    taskList: [
+      {
+        task: {
+          type: String,
+        },
+      },
+    ],
+  },
+  {
     versionKey: false,
-    timestamps: false
-})
+    timestamps: false,
+  },
+);

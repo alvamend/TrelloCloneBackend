@@ -20,4 +20,7 @@ export class CardEditDto{
     @IsOptional()
     @IsNotEmpty({message: 'status cannot be empty'})
     status: string;
+
+    @IsOptional()
+    dueDate: string;
 }

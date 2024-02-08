@@ -13,6 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { CardAddTaskDto } from 'src/dto/card/card.add.task.dto';
 import { CardCreateDto } from 'src/dto/card/card.create.dto';
 import { CardEditDto } from 'src/dto/card/card.edit.dto';
 import { CardMemberManagement } from 'src/dto/card/card.member.dto';
@@ -71,5 +72,19 @@ export class CardController {
   @UsePipes(ValidationPipe)
   removeMember(@Param() params, @Body() body: CardMemberManagement) {
     return this.cardService.removeMember(params.id, body);
+  }
+
+  @Put('add-task/:id')
+  @UseGuards(IdElementLength, CanEditCard)
+  @UsePipes(ValidationPipe)
+  addTask(@Param() params, @Body() body: CardAddTaskDto) {
+    return this.cardService.addTask(params.id, body);
+  }
+
+  @Put('remove-task/:id/task')
+  @UseGuards(IdElementLength, CanEditCard)
+  @UsePipes(ValidationPipe)
+  removeTask(@Param() params, @Query() query) {
+    return this.cardService.deleteTask(params.id, query.id);
   }
 }

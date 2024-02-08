@@ -8,8 +8,13 @@ export interface CardInterface extends Document {
     dueDate?: Date;
     cover?: string;
     status?: string;
+    taskList: Array<Tasks>;
 }
 
 interface Members {
     user: string;
+}
+
+interface Tasks {
+    task: string;
 }
