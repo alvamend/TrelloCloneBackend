@@ -25,3 +25,49 @@ Important dependencies:
 
 <p>Status: <strong>FINISHED</strong></p>
 </div>
+
+<section>
+  <h3>Key things to start the project using NESTJS</h3>
+  <p>If you're planning to start a new project, then you can simply run:</p>
+  
+  ````
+  npm i -g @nestjs/cli
+  nest new <Project-name>
+  ````
+
+  <p>To install the dependencies of this one and run the project</p>
+  
+  ````
+  npm install
+  npm run start:dev
+  ````
+
+  <p>For more information, check NestJS documentation: <a href="https://docs.nestjs.com/">https://docs.nestjs.com/</a></p>
+
+  _Note: as this is not running LIVE, you must create your OWN .env file to handle your environment variables._
+  <h5>.ENV structure:</h5>
+  
+  ````
+  DB_QUERY = Include your MongoDB Query String
+  ACCESS_TOKEN = This is a random string created
+  REFRESH_TOKEN = This is a random string created, not the same as ACCESS_TOKEN
+  ACCESS_TOKEN_DURATION = Duration of the AT, for example: 30s, 30m, 24h, 1d
+  REFRESH_TOKEN_DURATION = Duration of the RT, for example: 30s, 30m, 24h, 1d, MAKE SURE TO BE BIGGER THAN AT DURATION
+
+  The next 4 variables are obtained from Google Cloud Platform, KEEP THEM SECRET
+
+  PROJECT_ID = This is your project ID from GCP
+  CLIENT_EMAIL = Not your email address, but the email you specify in your project
+  BUCKET = The name of the bucket you created before
+  PRIVATE_KEY = This is the Private Key you receive when generating it, make sure to copy from -----BEGIN UNTIL END PRIVATE KEY-----\n
+  ````
+
+  If you would like to know how to integrate GCP in the project
+  <ol>
+    <li>Start a plan, go to <a href="https://cloud.google.com/gcp?utm_source=google&utm_medium=cpc&utm_campaign=emea-pl-all-en-bkws-all-all-trial-e-gcp-1707574&utm_content=text-ad-none-any-DEV_c-CRE_500236788864-ADGP_Hybrid+%7C+BKWS+-+EXA+%7C+Txt+-+GCP+-+General+-+v3-KWID_43700060393215914-kwd-26415313501-userloc_9048059&utm_term=KW_google+cloud+platform-NET_g-PLAC_&&gad_source=1&gclid=CjwKCAiAlJKuBhAdEiwAnZb7lYL_bxTEeuB3NW4X64w3Lj8kyA7CM16owPOBDquc1Ob8InO0NyBXTBoCo24QAvD_BwE&gclsrc=aw.ds&hl=en"></a></li>
+    <li>Create a Project with any name</li>
+  </ol>
+
+
+</section>
+
