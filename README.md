@@ -19,7 +19,9 @@ Important dependencies:
 - jsonwebtoken
 - bcrypt
 
-<p>Download Postman workspace to test</p>
+<div align="center">
+  <p>Download Postman workspace to test</p>
 <a href="https://www.postman.com/red-sunset-304499/workspace/trello-alternative">Postman API Documentation</a>
 
 <p>Status: <strong>FINISHED</strong></p>
+</div>
