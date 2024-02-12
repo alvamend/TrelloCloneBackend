@@ -47,9 +47,7 @@ export class AttachmentController {
   @Get('file/:filename')
   async getFile(@Param() params, @Res() response: Response) {
     const signedUrl = await this.attachmentService.getFile(params.filename);
-    if (signedUrl) {
-      response.redirect(signedUrl);
-    }
+    return response.status(200).json({signedUrl})
   }
 
   @Post('card=:id')
