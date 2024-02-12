@@ -117,6 +117,7 @@ export class CardService {
             status: 1,
             listInfo: 1,
             attachments: 1,
+            taskList: 1,
             members: {
               $map: {
                 input: '$members',
