@@ -27,7 +27,7 @@ export const CardSchema = new Schema(
     },
     cover: {
       type: String,
-      default: '#fff',
+      default: '#000',
     },
     status: {
       type: String,

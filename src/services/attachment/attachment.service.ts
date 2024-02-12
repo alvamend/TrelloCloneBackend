@@ -56,7 +56,7 @@ export class AttachmentService {
 
       if (!createdAttachment)
         throw new InternalServerErrorException('could not upload the file');
-      return { message: 'attachment added' };
+      return { message: 'attachment added', createdAttachment };
     } catch (error) {
       throw error;
     }
