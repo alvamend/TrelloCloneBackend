@@ -51,7 +51,7 @@ export class CardService {
           status: body?.status,
           listRef: body?.listRef,
           cover: body?.cover,
-          dueDate: new Date(body?.dueDate),
+          dueDate: body?.dueDate,
         },
       );
 

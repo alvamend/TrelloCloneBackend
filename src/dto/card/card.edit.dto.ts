@@ -22,5 +22,5 @@ export class CardEditDto{
     status: string;
 
     @IsOptional()
-    dueDate: string;
+    dueDate: Date;
 }
