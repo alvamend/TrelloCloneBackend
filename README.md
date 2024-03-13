@@ -21,7 +21,7 @@ Important dependencies:
 
 <div align="center">
   <p>Download Postman workspace to test</p>
-<a href="https://www.postman.com/red-sunset-304499/workspace/trello-alternative">Postman API Documentation</a>
+<a href="https://www.postman.com/alvaromendozamain/workspace/trello-alternative">Postman API Documentation</a>
 
 <p>Status: <strong>FINISHED</strong></p>
 </div>
