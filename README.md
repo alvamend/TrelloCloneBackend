@@ -107,7 +107,7 @@ Important dependencies:
       }
   </li>
   <li>
-    After all of this, then we need to create a BUCKET, this is where the info will be stored, Go to the main Menu -> Cloud Storage -> Bucket, under Configuration, you can change the permissions to "Fine-Grained"
+    After all of this, then we need to create a BUCKET, this is where the info will be stored, Go to the main Menu -> Cloud Storage -> Bucket, under Configuration, you can change the permissions to "Fine-Grained".
   </li>
   </ol>
 
